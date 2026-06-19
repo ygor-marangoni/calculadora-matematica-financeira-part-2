@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Calculadora Financeira — Capitalização Composta</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/@phosphor-icons/web"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { sans: ["Poppins", "sans-serif"] },
+                        colors: {
+                            primary: "#0ea5e9",
+                            secondary: "#334155",
+                        },
+                    },
+                },
+            };
+        </script>
+        <script type="module" src="./js/main.js"></script>
+    </head>
+    <body class="text-slate-800">
+        <main class="mx-auto w-full max-w-6xl p-4 md:p-8">
+            <header class="glass-card mb-6 rounded-sm p-6 md:p-8">
+                <div
+                    class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"
+                >
+                    <div class="flex items-start gap-4">
+                        <div class="rounded-sm bg-sky-100 p-3 text-primary">
+                            <i class="ph ph-calculator text-3xl"></i>
+                        </div>
+                        <div>
+                            <p
+                                class="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary"
+                            >
+                                2ª Parte — Calculadora Financeira
+                            </p>
+                            <h1
+                                class="text-2xl font-bold leading-tight text-slate-800 md:text-3xl"
+                            >
+                                Capitalização Composta
+                            </h1>
+                            <p
+                                class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500"
+                            >
+                                Calcule valores financeiros e converta taxas
+                                mantendo os períodos de capitalização
+                                consistentes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 gap-6">
+                <section
+                    class="glass-card rounded-sm p-6 md:p-8"
+                    aria-labelledby="compound-title"
+                >
+                    <div class="section-heading">
+                        <div class="section-icon">
+                            <i class="ph ph-chart-line-up"></i>
+                        </div>
+                        <div>
+                            <h2 id="compound-title">Capitalização Composta</h2>
+                            <p>
+                                Escolha a variável desejada e informe os dados
+                                necessários. Campos adicionais serão usados
+                                para validar a coerência do cálculo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="compound-form" novalidate>
+                        <div class="mb-5">
+                            <label class="field-label" for="compound-target"
+                                >O que deseja calcular?</label
+                            >
+                            <select
+                                id="compound-target"
+                                name="target"
+                                class="field-control"
+                            >
+                                <option value="VP">
+                                    Capital / Valor Presente (VP)
+                                </option>
+                                <option value="VF">
+                                    Montante / Valor Futuro (VF)
+                                </option>
+                                <option value="J">Juros (J)</option>
+                                <option value="i">Taxa (i)</option>
+                                <option value="n">Tempo (n)</option>
+                            </select>
+                        </div>
+
+                        <div
+                            class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                        >
+                            <div class="field-group" data-compound-field="VP">
+                                <label class="field-label" for="compound-vp"
+                                    >Capital / VP</label
+                                >
+                                <div class="input-with-prefix">
+                                    <span>R$</span>
+                                    <input
+                                        id="compound-vp"
+                                        name="VP"
+                                        type="text"
+                                        inputmode="decimal"
+                                        placeholder="1.000,00"
+                                    />
+                                </div>
+                                <p class="calculated-hint">
+                                    Este valor será calculado.
+                                </p>
+                            </div>
+
+                            <div class="field-group" data-compound-field="VF">
+                                <label class="field-label" for="compound-vf"
+                                    >Montante / VF</label
+                                >
+                                <div class="input-with-prefix">
+                                    <span>R$</span>
+                                    <input
+                                        id="compound-vf"
+                                        name="VF"
+                                        type="text"
+                                        inputmode="decimal"
+                                        placeholder="1.210,00"
+                                    />
+                                </div>
+                                <p class="calculated-hint">
+                                    Este valor será calculado.
+                                </p>
+                            </div>
+
+                            <div class="field-group" data-compound-field="J">
+                                <label class="field-label" for="compound-j"
+                                    >Juros / J</label
+                                >
+                                <div class="input-with-prefix">
+                                    <span>R$</span>
+                                    <input
+                                        id="compound-j"
+                                        name="J"
+                                        type="text"
+                                        inputmode="decimal"
+                                        placeholder="210,00"
+                                    />
+                                </div>
+                                <p class="calculated-hint">
+                                    Este valor será calculado.
+                                </p>
+                            </div>
+
+                            <div class="field-group" data-compound-field="i">
+                                <label class="field-label" for="compound-rate"
+                                    >Taxa / i</label
+                                >
+                                <div class="input-with-suffix">
+                                    <input
+                                        id="compound-rate"
+                                        name="i"
+                                        type="text"
+                                        inputmode="decimal"
+                                        placeholder="10"
+                                    />
+                                    <span>%</span>
+                                </div>
+                                <p class="calculated-hint">
+                                    Este valor será calculado.
+                                </p>
+                            </div>
+
+                            <div class="field-group" data-compound-field="n">
+                                <label class="field-label" for="compound-time"
+                                    >Tempo / n</label
+                                >
+                                <input
+                                    id="compound-time"
+                                    name="n"
+                                    type="text"
+                                    inputmode="decimal"
+                                    placeholder="2"
+                                    class="field-control"
+                                />
+                                <p class="calculated-hint">
+                                    Este valor será calculado.
+                                </p>
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label" for="rate-period"
+                                    >Período da taxa</label
+                                >
+                                <select
+                                    id="rate-period"
+                                    name="ratePeriod"
+                                    class="field-control"
+                                >
+                                    <option value="daily">ao dia</option>
+                                    <option value="monthly" selected>ao mês</option>
+                                    <option value="semester">
+                                        ao semestre
+                                    </option>
+                                    <option value="annual">ao ano</option>
+                                </select>
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label" for="time-period"
+                                    >Unidade do tempo</label
+                                >
+                                <select
+                                    id="time-period"
+                                    name="timePeriod"
+                                    class="field-control"
+                                >
+                                    <option value="daily">dias</option>
+                                    <option value="monthly" selected>meses</option>
+                                    <option value="semester">semestres</option>
+                                    <option value="annual">anos</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="ph ph-lightning"></i>
+                                Calcular
+                            </button>
+                            <button type="reset" class="btn-secondary">
+                                <i class="ph ph-eraser"></i>
+                                Limpar
+                            </button>
+                        </div>
+                    </form>
+
+                    <div
+                        id="compound-message"
+                        class="message-box hidden"
+                        role="alert"
+                    ></div>
+                    <div
+                        id="compound-result"
+                        class="result-box hidden"
+                        aria-live="polite"
+                    ></div>
+                </section>
+
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <section
+                        class="glass-card rounded-sm p-6 md:p-8"
+                        aria-labelledby="conversion-title"
+                    >
+                        <div class="section-heading">
+                            <div class="section-icon">
+                                <i class="ph ph-arrows-left-right"></i>
+                            </div>
+                            <div>
+                                <h2 id="conversion-title">
+                                    Conversão de Taxas — Capitalização
+                                </h2>
+                                <p>
+                                    Converta taxa nominal e proporcional usando
+                                    k períodos.
+                                </p>
+                            </div>
+                        </div>
+
+                        <form id="conversion-form" novalidate>
+                            <div class="space-y-4">
+                                <div class="field-group">
+                                    <label
+                                        class="field-label"
+                                        for="conversion-mode"
+                                        >Tipo de conversão</label
+                                    >
+                                    <select
+                                        id="conversion-mode"
+                                        name="mode"
+                                        class="field-control"
+                                    >
+                                        <option value="nominal-to-proportional">
+                                            Nominal → proporcional / efetiva
+                                        </option>
+                                        <option value="proportional-to-nominal">
+                                            Proporcional / efetiva → nominal
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <label
+                                        class="field-label"
+                                        id="conversion-rate-label"
+                                        for="conversion-rate"
+                                    >
+                                        Taxa nominal
+                                    </label>
+                                    <div class="input-with-suffix">
+                                        <input
+                                            id="conversion-rate"
+                                            name="rate"
+                                            type="text"
+                                            inputmode="decimal"
+                                            placeholder="12"
+                                        />
+                                        <span>%</span>
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <label
+                                        class="field-label"
+                                        for="conversion-k"
+                                        >Períodos de capitalização (k)</label
+                                    >
+                                    <input
+                                        id="conversion-k"
+                                        name="k"
+                                        type="text"
+                                        inputmode="decimal"
+                                        placeholder="12"
+                                        class="field-control"
+                                    />
+                                    <p class="field-help">
+                                        Ex.: 12 para capitalização mensal em um
+                                        ano.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="ph ph-arrows-clockwise"></i>
+                                    Converter
+                                </button>
+                                <button type="reset" class="btn-secondary">
+                                    <i class="ph ph-eraser"></i>
+                                    Limpar
+                                </button>
+                            </div>
+                        </form>
+
+                        <div
+                            id="conversion-message"
+                            class="message-box hidden"
+                            role="alert"
+                        ></div>
+                        <div
+                            id="conversion-result"
+                            class="result-box hidden"
+                            aria-live="polite"
+                        ></div>
+                    </section>
+
+                    <section
+                        class="glass-card rounded-sm p-6 md:p-8"
+                        aria-labelledby="equivalent-title"
+                    >
+                        <div class="section-heading">
+                            <div class="section-icon">
+                                <i class="ph ph-scales"></i>
+                            </div>
+                            <div>
+                                <h2 id="equivalent-title">
+                                    Taxas Equivalentes
+                                </h2>
+                                <p>
+                                    Converta taxas efetivas entre períodos
+                                    diferentes.
+                                </p>
+                            </div>
+                        </div>
+
+                        <form id="equivalent-form" novalidate>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div class="field-group sm:col-span-2">
+                                    <label
+                                        class="field-label"
+                                        for="equivalent-rate"
+                                        >Taxa efetiva informada</label
+                                    >
+                                    <div class="input-with-suffix">
+                                        <input
+                                            id="equivalent-rate"
+                                            name="rate"
+                                            type="text"
+                                            inputmode="decimal"
+                                            placeholder="1"
+                                        />
+                                        <span>%</span>
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <label
+                                        class="field-label"
+                                        for="source-period"
+                                        >Período de origem</label
+                                    >
+                                    <select
+                                        id="source-period"
+                                        name="sourcePeriod"
+                                        class="field-control"
+                                    >
+                                        <option value="monthly">mensal</option>
+                                        <option value="semester">
+                                            semestral
+                                        </option>
+                                        <option value="annual">anual</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <label
+                                        class="field-label"
+                                        for="target-period"
+                                        >Período desejado</label
+                                    >
+                                    <select
+                                        id="target-period"
+                                        name="targetPeriod"
+                                        class="field-control"
+                                    >
+                                        <option value="annual">anual</option>
+                                        <option value="semester">
+                                            semestral
+                                        </option>
+                                        <option value="monthly">mensal</option>
+                                    </select>
+                                </div>
+                                <div class="field-group sm:col-span-2">
+                                    <label
+                                        class="field-label"
+                                        for="equivalent-n"
+                                        >Relação entre os períodos (n)</label
+                                    >
+                                    <input
+                                        id="equivalent-n"
+                                        name="n"
+                                        type="text"
+                                        inputmode="decimal"
+                                        value="12"
+                                        class="field-control"
+                                    />
+                                    <p id="equivalent-hint" class="field-help">
+                                        Mensal → anual normalmente utiliza n =
+                                        12.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="ph ph-equals"></i>
+                                    Calcular
+                                </button>
+                                <button type="reset" class="btn-secondary">
+                                    <i class="ph ph-eraser"></i>
+                                    Limpar
+                                </button>
+                            </div>
+                        </form>
+
+                        <div
+                            id="equivalent-message"
+                            class="message-box hidden"
+                            role="alert"
+                        ></div>
+                        <div
+                            id="equivalent-result"
+                            class="result-box hidden"
+                            aria-live="polite"
+                        ></div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
