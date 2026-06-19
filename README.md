@@ -4,6 +4,11 @@
 
 Calculadora web para operações de **capitalização composta**, conversão de taxas e cálculo de taxas equivalentes. O projeto utiliza JavaScript puro e mantém uma interface responsiva, com formatação monetária e percentual no padrão brasileiro.
 
+## Autores
+
+- Ygor Marangoni
+- Raphael Muniz
+
 ## Funcionalidades
 
 ### Capitalização composta

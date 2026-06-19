@@ -128,6 +128,7 @@ export default class CalculatorService {
 			);
 		}
 
+		// Capital a partir dos juros: VP = J / [(1 + i)^n - 1]
 		const presentValue = this.ensureFinite(values.J / interestFactor);
 		if (presentValue <= 0) {
 			throw this.validationError(
@@ -143,17 +144,22 @@ export default class CalculatorService {
 		if (divisor === 0) {
 			throw this.validationError("Não é possível dividir por zero.");
 		}
+
+		// Valor presente: VP = VF / (1 + i)^n
 		return this.ensureFinite(futureValue / divisor);
 	}
 
 	calculateFutureValue(presentValue, rate, time) {
 		this.validatePositive(presentValue, "Capital (VP)");
+
+		// Valor futuro: VF = VP × (1 + i)^n
 		return this.ensureFinite(
 			presentValue * this.calculateCompoundFactor(rate, time),
 		);
 	}
 
 	calculateInterest(presentValue, futureValue) {
+		// Juros acumulados: J = VF - VP
 		return this.ensureFinite(futureValue - presentValue);
 	}
 
@@ -163,6 +169,8 @@ export default class CalculatorService {
 		this.validatePositive(time, "Tempo (n)");
 
 		const ratio = futureValue / presentValue;
+
+		// Taxa composta: i = (VF / VP)^(1 / n) - 1
 		return this.ensureFinite(Math.pow(ratio, 1 / time) - 1);
 	}
 
@@ -180,6 +188,7 @@ export default class CalculatorService {
 			);
 		}
 
+		// Tempo: n = log(VF / VP) / log(1 + i)
 		const time = Math.log(ratio) / logarithmBase;
 		if (time <= 0) {
 			throw this.validationError(
@@ -201,24 +210,32 @@ export default class CalculatorService {
 	convertNominalToProportional(nominalRate, periods) {
 		this.validateRate(nominalRate);
 		this.validatePositive(periods, "k");
+
+		// Taxa proporcional: i proporcional = i nominal / k
 		return this.ensureFinite(nominalRate / periods);
 	}
 
 	convertProportionalToNominal(proportionalRate, periods) {
 		this.validateRate(proportionalRate);
 		this.validatePositive(periods, "k");
+
+		// Taxa nominal: i nominal = i proporcional × k
 		return this.ensureFinite(proportionalRate * periods);
 	}
 
 	calculateEquivalentSmallerToLarger(rate, periods) {
 		this.validateRate(rate);
 		this.validatePositive(periods, "n");
+
+		// Período menor para maior: i equivalente = (1 + i)^n - 1
 		return this.ensureFinite(Math.pow(1 + rate, periods) - 1);
 	}
 
 	calculateEquivalentLargerToSmaller(rate, periods) {
 		this.validateRate(rate);
 		this.validatePositive(periods, "n");
+
+		// Período maior para menor: i equivalente = (1 + i)^(1 / n) - 1
 		return this.ensureFinite(Math.pow(1 + rate, 1 / periods) - 1);
 	}
 
